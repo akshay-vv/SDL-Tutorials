@@ -2,6 +2,7 @@
 
 App::App() {
     window = NULL;
+    renderer = NULL;
     running = true;
 }
 
@@ -19,7 +20,7 @@ int App::OnExecute() {
     }
 
     OnCleanup();
-    
+
     return 0;
 }
 
@@ -30,22 +31,27 @@ bool App::OnInit() {
     if ((window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)) == NULL) {
         return false;
     }
-
+    renderer = SDL_CreateRenderer(window, -1, 0);
     return true;
 }
 
 void App::OnEvent(SDL_Event *event) {
-    if (event->type == SDL_QUIT) {
-        running = false;
-    }
+    Event::OnEvent(event);
 }
 
 void App::OnLoop() {
 }
 
 void App::OnRender() {
+    SDL_RenderPresent(renderer);
 }
 
 void App::OnCleanup() {
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
     SDL_Quit();
+}
+
+void App::OnExit() {
+    running = false;
 }

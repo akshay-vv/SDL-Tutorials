@@ -3,17 +3,22 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 
-class App
-{
-private:
+#include "Event.h"
+
+class App : public Event {
+   private:
     bool running;
     SDL_Window* window;
+    SDL_Renderer* renderer;
 
-public:
+   public:
     App();
     int OnExecute();
 
-public:
+   public:
+    void OnExit();
+
+   public:
     bool OnInit();
     void OnEvent(SDL_Event* event);
     void OnLoop();
