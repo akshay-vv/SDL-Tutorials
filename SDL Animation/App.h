@@ -4,6 +4,7 @@
 #include <SDL.h>
 
 #include "Animation.h"
+#include "Entity.h"
 #include "Event.h"
 
 class Texture;
@@ -12,9 +13,8 @@ class App : public Event {
     bool running;
     SDL_Window* window;
     SDL_Renderer* renderer;
-    Texture* textureYoshi;
 
-    Animation animationYoshi;
+    Entity entity1, entity2;
 
    public:
     App();

@@ -6,7 +6,6 @@ App::App() {
     window = NULL;
     running = true;
     renderer = NULL;
-    textureYoshi = NULL;
 }
 
 int App::OnExecute() {
@@ -37,27 +36,40 @@ bool App::OnInit() {
         return false;
     }
     renderer = SDL_CreateRenderer(window, -1, 0);
-    textureYoshi = new Texture(renderer, "images/yoshi.bmp", 255, 0, 255);
-    animationYoshi.setMaxFrames(8);
+    entity1.OnLoad(renderer, "images/yoshi.bmp", 64, 64, 8);
+    entity2.OnLoad(renderer, "images/yoshi.bmp", 64, 64, 8);
+
+    entity2.x = 100;
+    Entity::entityList.push_back(&entity1);
+    Entity::entityList.push_back(&entity2);
+
     return true;
 }
 
-void App::OnEvent(SDL_Event *event) {
+void App::OnEvent(SDL_Event* event) {
     Event::OnEvent(event);
 }
 
 void App::OnLoop() {
-    animationYoshi.OnAnimate();
+    for (Entity* e : Entity::entityList) {
+        e->OnLoop();
+    }
 }
 
 void App::OnRender() {
     SDL_RenderClear(renderer);
-    textureYoshi->OnDraw(0, animationYoshi.getCurrentFrame() * 64, 64, 64, 290, 220);
+    for (Entity* e : Entity::entityList) {
+        e->OnRender();
+    }
     SDL_RenderPresent(renderer);
 }
 
 void App::OnCleanup() {
-    delete textureYoshi;
+    for (Entity* e : Entity::entityList) {
+        if (!e) continue;
+        e->OnCleanup();
+    }
+    Entity::entityList.clear();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

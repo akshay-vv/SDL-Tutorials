@@ -9,9 +9,12 @@
 				"-g",
 				"${fileDirname}\\**.cpp",
 				"-LC:/SDL/x86_64-w64-mingw32/lib",
+				"-LC:/SDL/SDL2_image-2.0.5/x86_64-w64-mingw32/lib/",
 				"-IC:/SDL/x86_64-w64-mingw32/include",
+				"-IC:/SDL/SDL2_image-2.0.5/x86_64-w64-mingw32/include/SDL2/",
 				"-lSDL2",
 				"-lSDL2Main",
+				"-lSDL2_image",
 				"-o",
 				"${fileDirname}\\${fileBasenameNoExtension}.exe"
 			],
