@@ -37,7 +37,7 @@ bool App::OnInit() {
         return false;
     }
     renderer = SDL_CreateRenderer(window, -1, 0);
-    textureYoshi = new Texture(renderer, "images/yoshi.bmp");
+    textureYoshi = new Texture(renderer, "images/yoshi.bmp", 255, 0, 255);
     animationYoshi.setMaxFrames(8);
     return true;
 }
@@ -51,6 +51,7 @@ void App::OnLoop() {
 }
 
 void App::OnRender() {
+    SDL_RenderClear(renderer);
     textureYoshi->OnDraw(0, animationYoshi.getCurrentFrame() * 64, 64, 64, 290, 220);
     SDL_RenderPresent(renderer);
 }
