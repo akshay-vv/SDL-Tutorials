@@ -27,7 +27,7 @@ class Entity {
     virtual ~Entity();
 
    public:
-    virtual bool OnLoad(SDL_Renderer* renderer, std::string file, int width, int height, int maxFrames);
+    virtual bool OnLoad(SDL_Renderer* renderer, std::string file, int width, int height, int maxFrames, int r, int g, int b);
     virtual void OnLoop();
     virtual void OnRender();
     virtual void OnCleanup();

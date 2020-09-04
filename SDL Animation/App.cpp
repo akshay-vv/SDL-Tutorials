@@ -1,5 +1,8 @@
 #include "App.h"
 
+#include "Area.h"
+#include "Camera.h"
+#include "Define.h"
 #include "Texture.h"
 
 App::App() {
@@ -29,19 +32,18 @@ int App::OnExecute() {
 }
 
 bool App::OnInit() {
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         return false;
+    }
 
-    if ((window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 640, 0)) == NULL) {
+    if ((window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WWIDTH, WHEIGHT, 0)) == NULL) {
         return false;
     }
     renderer = SDL_CreateRenderer(window, -1, 0);
-    entity1.OnLoad(renderer, "images/yoshi.bmp", 64, 64, 8);
-    entity2.OnLoad(renderer, "images/yoshi.bmp", 64, 64, 8);
 
-    entity2.x = 100;
-    Entity::entityList.push_back(&entity1);
-    Entity::entityList.push_back(&entity2);
+    if (Area::AreaControl.OnLoad(renderer, "maps/1_area.txt") == false) {
+        return false;
+    }
 
     return true;
 }
@@ -51,25 +53,18 @@ void App::OnEvent(SDL_Event* event) {
 }
 
 void App::OnLoop() {
-    for (Entity* e : Entity::entityList) {
-        e->OnLoop();
-    }
 }
 
 void App::OnRender() {
     SDL_RenderClear(renderer);
-    for (Entity* e : Entity::entityList) {
-        e->OnRender();
-    }
+
+    Area::AreaControl.OnRender(Camera::CameraControl.getX(), Camera::CameraControl.getY());
+
     SDL_RenderPresent(renderer);
 }
 
 void App::OnCleanup() {
-    for (Entity* e : Entity::entityList) {
-        if (!e) continue;
-        e->OnCleanup();
-    }
-    Entity::entityList.clear();
+    Area::AreaControl.OnCleanup();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -77,4 +72,50 @@ void App::OnCleanup() {
 
 void App::OnExit() {
     running = false;
+}
+
+void App::OnKeyDown(SDL_Keycode sym, Uint16 mod) {
+    switch (sym) {
+        case SDLK_UP:
+            keyStates[SDLK_UP] = true;
+            Camera::CameraControl.OnMove(keyStates);
+            break;
+        case SDLK_DOWN:
+            keyStates[SDLK_DOWN] = true;
+            Camera::CameraControl.OnMove(keyStates);
+            break;
+        case SDLK_LEFT:
+            keyStates[SDLK_LEFT] = true;
+            Camera::CameraControl.OnMove(keyStates);
+            break;
+        case SDLK_RIGHT:
+            keyStates[SDLK_RIGHT] = true;
+            Camera::CameraControl.OnMove(keyStates);
+            break;
+        default: {
+        }
+    }
+}
+
+void App::OnKeyUp(SDL_Keycode sym, Uint16 mod) {
+    switch (sym) {
+        case SDLK_UP:
+            keyStates[SDLK_UP] = false;
+            Camera::CameraControl.OnMove(keyStates);
+            break;
+        case SDLK_DOWN:
+            keyStates[SDLK_DOWN] = false;
+            Camera::CameraControl.OnMove(keyStates);
+            break;
+        case SDLK_LEFT:
+            keyStates[SDLK_LEFT] = false;
+            Camera::CameraControl.OnMove(keyStates);
+            break;
+        case SDLK_RIGHT:
+            keyStates[SDLK_RIGHT] = false;
+            Camera::CameraControl.OnMove(keyStates);
+            break;
+        default: {
+        }
+    }
 }

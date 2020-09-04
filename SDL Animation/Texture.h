@@ -9,14 +9,18 @@ class Texture {
    private:
     SDL_Renderer* renderer;
     SDL_Texture* texture;
+    int width;
+    int height;
 
    public:
     Texture(SDL_Renderer* renderer);
-    Texture(SDL_Renderer* renderer, std::string file);
+    Texture(SDL_Renderer* renderer, std::string& file);
     Texture(SDL_Renderer* renderer, std::string file, int red, int green, int blue);
     virtual ~Texture();
     void OnDraw();
-    void OnDraw(int x, int y, int h, int w, int destX, int destY);
+    void OnDraw(int destX, int destY, int srcX, int srcY, int srcW, int srcH);
+    int getWidth();
+    int getHeight();
 };
 
 #endif

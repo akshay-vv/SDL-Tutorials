@@ -14,8 +14,6 @@ class App : public Event {
     SDL_Window* window;
     SDL_Renderer* renderer;
 
-    Entity entity1, entity2;
-
    public:
     App();
     int OnExecute();
@@ -29,5 +27,7 @@ class App : public Event {
 
    public:
     void OnExit();
+    void OnKeyDown(SDL_Keycode sym, Uint16 mod);
+    void OnKeyUp(SDL_Keycode sym, Uint16 mod);
 };
 #endif

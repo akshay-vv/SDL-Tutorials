@@ -1,6 +1,10 @@
 #include "Event.h"
 
 Event::Event() {
+    keyStates.insert({SDLK_UP, false});
+    keyStates.insert({SDLK_DOWN, false});
+    keyStates.insert({SDLK_LEFT, false});
+    keyStates.insert({SDLK_RIGHT, false});
 }
 
 Event::~Event() {

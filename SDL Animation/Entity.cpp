@@ -15,8 +15,8 @@ Entity::Entity() {
 Entity::~Entity() {
 }
 
-bool Entity::OnLoad(SDL_Renderer* renderer, std::string file, int width, int height, int maxFrames) {
-    textureEntity = new Texture(renderer, file, 255, 0, 255);
+bool Entity::OnLoad(SDL_Renderer* renderer, std::string file, int width, int height, int maxFrames, int r, int g, int b) {
+    textureEntity = new Texture(renderer, file, r, g, b);
     this->width = width;
     this->height = height;
 

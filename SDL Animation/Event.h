@@ -3,7 +3,11 @@
 
 #include <SDL.h>
 
+#include <map>
 class Event {
+   public:
+    std::map<int, bool> keyStates;
+
    public:
     Event();
 

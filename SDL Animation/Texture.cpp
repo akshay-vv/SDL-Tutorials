@@ -9,10 +9,11 @@ Texture::Texture(SDL_Renderer* renderer) {
     SDL_SetRenderTarget(renderer, texture);
 }
 
-Texture::Texture(SDL_Renderer* renderer, std::string file) {
+Texture::Texture(SDL_Renderer* renderer, std::string& file) {
     this->renderer = renderer;
-    SDL_Surface* surface = SDL_LoadBMP(file.c_str());
+    SDL_Surface* surface = IMG_Load(file.c_str());
     texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_QueryTexture(texture, NULL, NULL, &width, &height);
     SDL_FreeSurface(surface);
 }
 
@@ -33,7 +34,7 @@ void Texture::OnDraw() {
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 }
 
-void Texture::OnDraw(int destX, int destY, int srcX, int srcY, int srcH, int srcW) {
+void Texture::OnDraw(int destX, int destY, int srcX, int srcY, int srcW, int srcH) {
     SDL_Rect sourceRect;
     sourceRect.x = srcX;
     sourceRect.y = srcY;
@@ -46,4 +47,12 @@ void Texture::OnDraw(int destX, int destY, int srcX, int srcY, int srcH, int src
     destRect.h = srcH;
     destRect.w = srcW;
     SDL_RenderCopy(renderer, texture, &sourceRect, &destRect);
+}
+
+int Texture::getWidth() {
+    return width;
+}
+
+int Texture::getHeight() {
+    return height;
 }
