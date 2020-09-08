@@ -29,43 +29,21 @@ void Map::OnRender(int mapX, int mapY) {
 
     int tilesWidth = textureTileset->getWidth() / TILE_WIDTH;
     int tilesHeight = textureTileset->getHeight() / TILE_HEIGHT;
+    int id = 0;
+    for (int y = 0; y < MAP_HEIGHT; ++y) {
+        for (int x = 0; x < MAP_WIDTH; ++x) {
+            if (tileList[id].type != TILE_TYPE_NONE) {
+                // tx and ty is this tiles offset with respect to the map
+                int tx = mapX + (x * TILE_WIDTH);
+                int ty = mapY + (y * TILE_HEIGHT);
 
-    int ID = 0;
+                // tileSetX and tileSetY are the coordinates within tiles.png for tileId
+                int tileSetX = (tileList[id].tileId % tilesWidth) * TILE_WIDTH;
+                int tileSetY = (tileList[id].tileId / tilesWidth) * TILE_HEIGHT;
 
-    for (int Y = 0; Y < MAP_HEIGHT; Y++) {
-        for (int X = 0; X < MAP_WIDTH; X++) {
-            if (tileList[ID].type == TILE_TYPE_NONE) {
-                ID++;
-                continue;
+                textureTileset->OnDraw(tx, ty, tileSetX, tileSetY, TILE_WIDTH, TILE_HEIGHT);
             }
-
-            int tX = mapX + (X * TILE_WIDTH);
-            int tY = mapY + (Y * TILE_HEIGHT);
-
-            int TilesetX = (tileList[ID].tileId % tilesWidth) * TILE_WIDTH;
-            int TilesetY = (tileList[ID].tileId / tilesWidth) * TILE_WIDTH;
-
-            textureTileset->OnDraw(tX, tY, TilesetX, TilesetY, TILE_WIDTH, TILE_HEIGHT);
-
-            ID++;
+            ++id;
         }
     }
-
-    // int id = 0;
-    // for (int y = 0; y < MAP_HEIGHT; ++y) {
-    //     for (int x = 0; x < MAP_WIDTH; ++x) {
-    //         if (tileList[id].type != TILE_TYPE_NONE) {
-    //             // tx and ty is this tiles offset with respect to the map
-    //             int tx = mapX + (x * TILE_WIDTH);
-    //             int ty = mapY + (y * TILE_HEIGHT);
-
-    //             // tileSetX and tileSetY are the coordinates within tiles.png for tileId
-    //             int tileSetX = (tileList[id].tileId % tilesWidth) * TILE_WIDTH;
-    //             int tileSetY = (tileList[id].tileId / tilesWidth) * TILE_HEIGHT;
-
-    //             textureTileset->OnDraw(tx, ty, tileSetX, tileSetY, TILE_WIDTH, TILE_HEIGHT);
-    //         }
-    //         ++id;
-    //     }
-    // }
 }

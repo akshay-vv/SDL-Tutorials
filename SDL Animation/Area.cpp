@@ -51,40 +51,24 @@ bool Area::OnLoad(SDL_Renderer* renderer, std::string file) {
 }
 
 void Area::OnRender(int cameraX, int cameraY) {
-    int MapWidth = MAP_WIDTH * TILE_WIDTH;
-    int MapHeight = MAP_HEIGHT * TILE_HEIGHT;
+    int mapWidth = MAP_WIDTH * TILE_WIDTH;
+    int mapHeight = MAP_HEIGHT * TILE_HEIGHT;
 
-    int FirstID = -cameraX / MapWidth;
-    FirstID = FirstID + ((-cameraY / MapHeight) * areaSize);
+    int firstMapId = -cameraX / mapWidth;
+    firstMapId += ((-cameraY / mapHeight) * areaSize);
 
-    for (int i = 0; i < 4; i++) {
-        int ID = FirstID + ((i / 2) * areaSize) + (i % 2);
+    int visibleWidth = 2;
+    int visibleHeight = 2;
+    for (int i = 0; i < visibleWidth * visibleHeight; ++i) {
+        int id = ((i / visibleWidth) * areaSize) + firstMapId;
+        id += (i % visibleHeight);
 
-        if (ID < 0 || ID >= mapList.size()) continue;
-
-        int X = ((ID % areaSize) * MapWidth) + cameraX;
-        int Y = ((ID / areaSize) * MapHeight) + cameraY;
-
-        mapList[ID].OnRender(X, Y);
+        if (id >= 0 && id < mapList.size()) {
+            int x = ((id % areaSize) * mapWidth) + cameraX;
+            int y = ((id / areaSize) * mapHeight) + cameraY;
+            mapList[id].OnRender(x, y);
+        }
     }
-    // int mapWidth = MAP_WIDTH * TILE_WIDTH;
-    // int mapHeight = MAP_HEIGHT * TILE_HIEGHT;
-
-    // int firstMapId = -cameraX / mapWidth;
-    // firstMapId += ((-cameraY / mapHeight) * areaSize);
-
-    // int visibleWidth = 2;
-    // int visibleHeight = 2;
-    // for (int i = 0; i < visibleWidth * visibleHeight; ++i) {
-    //     int id = ((i / visibleWidth) * areaSize) + firstMapId;
-    //     id += (i % visibleHeight);
-
-    //     if (id >= 0 && id < mapList.size()) {
-    //         int x = ((id % areaSize) * mapWidth) + cameraX;
-    //         int y = ((id / areaSize) * mapHeight) + cameraY;
-    //         mapList[id].OnRender(x, y);
-    //     }
-    // }
 }
 
 void Area::OnCleanup() {
