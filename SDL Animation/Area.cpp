@@ -71,6 +71,34 @@ void Area::OnRender(int cameraX, int cameraY) {
     }
 }
 
+Map* Area::GetMap(int X, int Y) {
+    int MapWidth = MAP_WIDTH * TILE_WIDTH;
+    int MapHeight = MAP_HEIGHT * TILE_HEIGHT;
+
+    int ID = X / MapWidth;
+    ID = ID + ((Y / MapHeight) * areaSize);
+
+    if (ID < 0 || ID >= mapList.size()) {
+        return NULL;
+    }
+
+    return &mapList[ID];
+}
+
+Tile* Area::GetTile(int X, int Y) {
+    int MapWidth = MAP_WIDTH * TILE_WIDTH;
+    int MapHeight = MAP_HEIGHT * TILE_HEIGHT;
+
+    Map* Map = GetMap(X, Y);
+
+    if (Map == NULL) return NULL;
+
+    X = X % MapWidth;
+    Y = Y % MapHeight;
+
+    return Map->GetTile(X, Y);
+}
+
 void Area::OnCleanup() {
     if (textureTileset)
         delete textureTileset;

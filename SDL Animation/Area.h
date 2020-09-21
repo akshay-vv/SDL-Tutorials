@@ -1,5 +1,5 @@
 #ifndef _AREA_H_
-#define _AREA_H
+#define _AREA_H_
 #include <SDL.h>
 
 #include "Map.h"
@@ -13,6 +13,10 @@ class Area {
    private:
     int areaSize;
     Texture* textureTileset;
+
+   public:
+    Map* GetMap(int X, int Y);
+    Tile* GetTile(int X, int Y);
 
    public:
     Area();

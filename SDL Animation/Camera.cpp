@@ -7,17 +7,9 @@ Camera::Camera() {
     targetMode = TARGET_MODE_NORMAL;
 }
 
-void Camera::OnMove(std::map<int, bool>& keyStates) {
-    const int xOffset = 5;
-    const int yOffset = 5;
-    if (keyStates[SDLK_UP])
-        y += yOffset;
-    if (keyStates[SDLK_DOWN])
-        y -= yOffset;
-    if (keyStates[SDLK_LEFT])
-        x += xOffset;
-    if (keyStates[SDLK_RIGHT])
-        x -= xOffset;
+void Camera::OnMove(int MoveX, int MoveY) {
+    x += MoveX;
+    y += MoveY;
 }
 
 int Camera::getX() {
@@ -25,6 +17,7 @@ int Camera::getX() {
         if (targetMode == TARGET_MODE_CENTER) {
             return *targetX - (WWIDTH / 2);
         }
+        return *targetX;
     }
     return x;
 }
@@ -34,6 +27,7 @@ int Camera::getY() {
         if (targetMode == TARGET_MODE_CENTER) {
             return *targetY - (WHEIGHT / 2);
         }
+        return *targetY;
     }
     return y;
 }
@@ -43,7 +37,7 @@ void Camera::setPos(int x, int y) {
     this->y = y;
 }
 
-void Camera::setTarget(int* x, int* y) {
+void Camera::setTarget(float* x, float* y) {
     targetX = x;
     targetY = y;
 }

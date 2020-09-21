@@ -16,6 +16,9 @@ class Map {
     Map();
 
    public:
+    Tile* GetTile(int X, int Y);
+
+   public:
     bool OnLoad(std::string file);
     void OnRender(int mapX, int mapY);
 };

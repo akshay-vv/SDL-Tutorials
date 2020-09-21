@@ -20,8 +20,8 @@ class Camera {
     int x;
     int y;
 
-    int* targetX;
-    int* targetY;
+    float* targetX;
+    float* targetY;
 
    public:
     int targetMode;
@@ -30,7 +30,7 @@ class Camera {
     Camera();
 
    public:
-    void OnMove(std::map<int, bool>& keyStates);
+    void OnMove(int MoveX, int MoveY);
 
    public:
     int getX();
@@ -38,7 +38,7 @@ class Camera {
 
    public:
     void setPos(int x, int y);
-    void setTarget(int* x, int* y);
+    void setTarget(float* x, float* y);
 };
 
 #endif

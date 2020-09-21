@@ -47,3 +47,16 @@ void Map::OnRender(int mapX, int mapY) {
         }
     }
 }
+
+Tile* Map::GetTile(int X, int Y) {
+    int ID = 0;
+
+    ID = X / TILE_WIDTH;
+    ID = ID + (MAP_WIDTH * (Y / TILE_HEIGHT));
+
+    if (ID < 0 || ID >= tileList.size()) {
+        return NULL;
+    }
+
+    return &tileList[ID];
+}

@@ -1,14 +1,20 @@
 #include "App.h"
 
+#include <stdio.h>
+
 #include "Area.h"
 #include "Camera.h"
 #include "Define.h"
+#include "FPS.h"
 #include "Texture.h"
 
 App::App() {
     window = NULL;
     running = true;
     renderer = NULL;
+    OldTime = LastTime = NumFrames = Frames = time = 0;
+    SpeedFactor = 0.0f;
+    methodCalls = 0ll;
 }
 
 int App::OnExecute() {
@@ -23,6 +29,11 @@ int App::OnExecute() {
         OnLoop();
         OnRender();
 
+        if (SDL_GetTicks() > time + 1000) {
+            time = SDL_GetTicks();
+            printf("Calls %lld Frames %d  NumFrames %d Speed %f\n", methodCalls, Frames, NumFrames, SpeedFactor);
+            methodCalls = 0;
+        }
         SDL_Delay(1);  // Breathe
     }
 
@@ -45,6 +56,23 @@ bool App::OnInit() {
         return false;
     }
 
+    std::string yoshiImage("images/yoshi.png");
+    if (player1.OnLoad(renderer, yoshiImage, 64, 64, 8) == false) {
+        return false;
+    }
+
+    if (player2.OnLoad(renderer, yoshiImage, 64, 64, 8) == false) {
+        return false;
+    }
+
+    player2.x = 100;
+
+    Entity::entityList.push_back(&player1);
+    Entity::entityList.push_back(&player2);
+
+    Camera::CameraControl.targetMode = TARGET_MODE_CENTER;
+    Camera::CameraControl.setTarget(&player1.x, &player1.y);
+
     return true;
 }
 
@@ -53,12 +81,22 @@ void App::OnEvent(SDL_Event* event) {
 }
 
 void App::OnLoop() {
+    FPS::FPSControl.onLoop();
+    for (auto entity : Entity::entityList) {
+        if (entity == NULL) continue;
+        entity->OnLoop();
+    }
+    FPS::FPSControl.onLoop();
 }
 
 void App::OnRender() {
     SDL_RenderClear(renderer);
 
-    Area::AreaControl.OnRender(Camera::CameraControl.getX(), Camera::CameraControl.getY());
+    Area::AreaControl.OnRender(-Camera::CameraControl.getX(), -Camera::CameraControl.getY());
+    for (auto entity : Entity::entityList) {
+        if (entity == NULL) continue;
+        entity->OnRender();
+    }
 
     SDL_RenderPresent(renderer);
 }
@@ -76,22 +114,16 @@ void App::OnExit() {
 
 void App::OnKeyDown(SDL_Keycode sym, Uint16 mod) {
     switch (sym) {
-        case SDLK_UP:
-            keyStates[SDLK_UP] = true;
-            Camera::CameraControl.OnMove(keyStates);
+        case SDLK_LEFT: {
+            player1.moveLeft = true;
             break;
-        case SDLK_DOWN:
-            keyStates[SDLK_DOWN] = true;
-            Camera::CameraControl.OnMove(keyStates);
+        }
+
+        case SDLK_RIGHT: {
+            player1.moveRight = true;
             break;
-        case SDLK_LEFT:
-            keyStates[SDLK_LEFT] = true;
-            Camera::CameraControl.OnMove(keyStates);
-            break;
-        case SDLK_RIGHT:
-            keyStates[SDLK_RIGHT] = true;
-            Camera::CameraControl.OnMove(keyStates);
-            break;
+        }
+
         default: {
         }
     }
@@ -99,22 +131,16 @@ void App::OnKeyDown(SDL_Keycode sym, Uint16 mod) {
 
 void App::OnKeyUp(SDL_Keycode sym, Uint16 mod) {
     switch (sym) {
-        case SDLK_UP:
-            keyStates[SDLK_UP] = false;
-            Camera::CameraControl.OnMove(keyStates);
+        case SDLK_LEFT: {
+            player1.moveLeft = false;
             break;
-        case SDLK_DOWN:
-            keyStates[SDLK_DOWN] = false;
-            Camera::CameraControl.OnMove(keyStates);
+        }
+
+        case SDLK_RIGHT: {
+            player1.moveRight = false;
             break;
-        case SDLK_LEFT:
-            keyStates[SDLK_LEFT] = false;
-            Camera::CameraControl.OnMove(keyStates);
-            break;
-        case SDLK_RIGHT:
-            keyStates[SDLK_RIGHT] = false;
-            Camera::CameraControl.OnMove(keyStates);
-            break;
+        }
+
         default: {
         }
     }

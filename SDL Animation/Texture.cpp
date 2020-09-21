@@ -11,10 +11,7 @@ Texture::Texture(SDL_Renderer* renderer) {
 
 Texture::Texture(SDL_Renderer* renderer, std::string& file) {
     this->renderer = renderer;
-    SDL_Surface* surface = IMG_Load(file.c_str());
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_QueryTexture(texture, NULL, NULL, &width, &height);
-    SDL_FreeSurface(surface);
+    texture = IMG_LoadTexture(renderer, file.c_str());
 }
 
 // TODO: Replace with Builder

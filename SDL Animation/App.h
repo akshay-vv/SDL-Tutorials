@@ -6,6 +6,7 @@
 #include "Animation.h"
 #include "Entity.h"
 #include "Event.h"
+#include "Player.h"
 
 class Texture;
 class App : public Event {
@@ -13,6 +14,9 @@ class App : public Event {
     bool running;
     SDL_Window* window;
     SDL_Renderer* renderer;
+
+   public:
+    CPlayer player1, player2;
 
    public:
     App();
@@ -29,5 +33,10 @@ class App : public Event {
     void OnExit();
     void OnKeyDown(SDL_Keycode sym, Uint16 mod);
     void OnKeyUp(SDL_Keycode sym, Uint16 mod);
+
+   private:
+    int OldTime, LastTime, NumFrames, Frames, time;
+    long long methodCalls;
+    float SpeedFactor;
 };
 #endif
