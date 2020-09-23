@@ -7,12 +7,6 @@
 #include "Texture.h"
 
 std::vector<Entity*> Entity::entityList;
-std::vector<EntityCol> EntityCol::EntityColList;
-
-EntityCol::EntityCol() {
-    entityA = NULL;
-    entityB = NULL;
-}
 
 Entity::Entity() {
     textureEntity = NULL;
@@ -22,6 +16,8 @@ Entity::Entity() {
 
     moveLeft = false;
     moveRight = false;
+
+    canJump = false;
 
     type = ENTITY_TYPE_GENERIC;
     dead = false;
@@ -33,8 +29,8 @@ Entity::Entity() {
     accelX = 0;  // Rate of Speed
     accelY = 0;
 
-    maxSpeedX = 5;  // Speed Cap
-    maxSpeedY = 5;
+    maxSpeedX = 10;  // Speed Cap
+    maxSpeedY = 10;
 
     currentFrameCol = 0;  // Which Frame to pick from the animation image
     currentFrameRow = 0;
@@ -106,11 +102,22 @@ void Entity::OnAnimate() {
     animControl.OnAnimate();
 }
 
-void Entity::OnCollision(Entity* Entity) {
+bool Entity::jump() {
+    if (canJump == false) return false;
+
+    speedY = -maxSpeedY;
+
+    return true;
+}
+
+bool Entity::OnCollision(Entity* Entity) {
+    return false;
 }
 
 void Entity::OnMove(float moveX, float moveY) {
     if (moveX == 0 && moveY == 0) return;
+
+    canJump = false;
 
     double newX = 0;
     double newY = 0;
@@ -148,6 +155,9 @@ void Entity::OnMove(float moveX, float moveY) {
             if (posValid((int)(x), (int)(y + newY))) {
                 y += newY;
             } else {
+                if (moveY > 0) {
+                    canJump = true;
+                }
                 speedY = 0;
             }
         }

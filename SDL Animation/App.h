@@ -14,6 +14,7 @@ class App : public Event {
     bool running;
     SDL_Window* window;
     SDL_Renderer* renderer;
+    int soundA, soundB;
 
    public:
     CPlayer player1, player2;
@@ -33,10 +34,5 @@ class App : public Event {
     void OnExit();
     void OnKeyDown(SDL_Keycode sym, Uint16 mod);
     void OnKeyUp(SDL_Keycode sym, Uint16 mod);
-
-   private:
-    int OldTime, LastTime, NumFrames, Frames, time;
-    long long methodCalls;
-    float SpeedFactor;
 };
 #endif

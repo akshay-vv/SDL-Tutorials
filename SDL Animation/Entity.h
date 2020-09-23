@@ -76,11 +76,17 @@ class Entity {
     virtual void OnRender();
     virtual void OnCleanup();
     virtual void OnAnimate();
-    virtual void OnCollision(Entity* entity);
+    virtual bool OnCollision(Entity* entity);
 
    public:
     void OnMove(float moveX, float moveY);
     void stopMove();
+
+   protected:
+    bool canJump;
+
+   public:
+    bool jump();
 
    public:
     bool collides(int oX, int oY, int oW, int oH);

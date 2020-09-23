@@ -6,15 +6,13 @@
 #include "Camera.h"
 #include "Define.h"
 #include "FPS.h"
+#include "SoundBank.h"
 #include "Texture.h"
 
 App::App() {
     window = NULL;
     running = true;
     renderer = NULL;
-    OldTime = LastTime = NumFrames = Frames = time = 0;
-    SpeedFactor = 0.0f;
-    methodCalls = 0ll;
 }
 
 int App::OnExecute() {
@@ -29,11 +27,6 @@ int App::OnExecute() {
         OnLoop();
         OnRender();
 
-        if (SDL_GetTicks() > time + 1000) {
-            time = SDL_GetTicks();
-            printf("Calls %lld Frames %d  NumFrames %d Speed %f\n", methodCalls, Frames, NumFrames, SpeedFactor);
-            methodCalls = 0;
-        }
         SDL_Delay(1);  // Breathe
     }
 
@@ -44,6 +37,10 @@ int App::OnExecute() {
 
 bool App::OnInit() {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+        return false;
+    }
+
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0) {
         return false;
     }
 
@@ -65,8 +62,17 @@ bool App::OnInit() {
         return false;
     }
 
-    player2.x = 100;
+    if ((soundA = CSoundBank::SoundControl.OnLoad("audio/sounda.wav")) == -1) {
+        return false;
+    }
 
+    if ((soundB = CSoundBank::SoundControl.OnLoad("audio/soundb.wav")) == -1) {
+        return false;
+    }
+
+    // player2.x = 100;
+    player1.x = 0;
+    player1.y = 0;
     Entity::entityList.push_back(&player1);
     Entity::entityList.push_back(&player2);
 
@@ -86,7 +92,19 @@ void App::OnLoop() {
         if (entity == NULL) continue;
         entity->OnLoop();
     }
-    FPS::FPSControl.onLoop();
+
+    for (int i = 0; i < EntityCol::EntityColList.size(); i++) {
+        Entity* entityA = EntityCol::EntityColList[i].entityA;
+        Entity* entityB = EntityCol::EntityColList[i].entityB;
+
+        if (entityA == NULL || entityB == NULL) continue;
+
+        if (entityA->OnCollision(entityB)) {
+            entityB->OnCollision(entityA);
+        }
+    }
+
+    EntityCol::EntityColList.clear();
 }
 
 void App::OnRender() {
@@ -102,6 +120,8 @@ void App::OnRender() {
 }
 
 void App::OnCleanup() {
+    CSoundBank::SoundControl.OnCleanup();
+    Mix_CloseAudio();
     Area::AreaControl.OnCleanup();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -121,6 +141,23 @@ void App::OnKeyDown(SDL_Keycode sym, Uint16 mod) {
 
         case SDLK_RIGHT: {
             player1.moveRight = true;
+            break;
+        }
+
+        case SDLK_SPACE: {
+            if (player1.jump()) {
+                CSoundBank::SoundControl.Play(soundA);
+            }
+            break;
+        }
+
+        case SDLK_1: {
+            CSoundBank::SoundControl.Play(soundA);
+            break;
+        }
+
+        case SDLK_RCTRL: {
+            CSoundBank::SoundControl.Play(soundB);
             break;
         }
 
